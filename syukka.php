@@ -96,11 +96,6 @@ function getId($id,$con){
 		<!-- エラーメッセージ -->
 		<div id="error">
 		<?php
-		// Test
-		// $id = 1;
-		// $t = getId($id, $dbh);
-		// var_dump($t);
-
 		/*
 		 * ⑬SESSIONの「error」にメッセージが設定されているかを判定する。
 		 * 設定されていた場合はif文の中に入る。
@@ -132,7 +127,7 @@ function getId($id,$con){
 				// foreach($_POST['books'] as $val){
 
 				// Test
-				$book_id = [1, 10, 25];
+				$book_id = [1, 10, 20, 25];
 				foreach($book_id as $val){
 					// ⑯「getId」関数を呼び出し、変数に戻り値を入れる。その際引数に⑮の処理で取得した値と⑥のDBの接続情報を渡す。
 					$result = getId($val, $dbh);
