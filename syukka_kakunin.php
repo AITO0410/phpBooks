@@ -35,13 +35,28 @@ if ($_SESSION["login"] == false /* ⑤の処理を書く */){
 }
 
 //⑧データベースへ接続し、接続情報を変数に保存する
+try{
+    $pdo = new PDO(DB_HOST, DB_USER, DB_PASSWORD, [ 
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, 
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_EMULATE_PREPARES => false,
+    ]);
+}catch(PDOException $e){
+    echo $e -> getMessage() . "\n";
+    exit();
+}
 
 //⑨データベースで使用する文字コードを「UTF8」にする
+$dsn = 'mysql:dbname=phpBooks;charset=utf8;host=localhost';
+$user = 'phpBooks';
+$pass = 'zaiko';
+$dbh = new PDO($dsn, $user, $pass);
 
-//⑩書籍数をカウントするための変数を宣言し、値を0で初期化する
+
+$count = 0; //⑩書籍数をカウントするための変数を宣言し、値を0で初期化する
 
 //⑪POSTの「books」から値を取得し、変数に設定する。
-foreach(/* ⑪の処理を書く */){
+foreach($_POST['books'] as $val /* ⑪の処理を書く */){
 	/*
 	 * ⑫POSTの「stock」について⑩の変数の値を使用して値を取り出す。
 	 * 半角数字以外の文字が設定されていないかを「is_numeric」関数を使用して確認する。
