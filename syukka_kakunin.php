@@ -17,14 +17,12 @@ function getByid($id,$con){
 	 * その際にWHERE句でメソッドの引数の$idに一致する書籍のみ取得する。
 	 * SQLの実行結果を変数に保存する。
 	 */
-	$sql = "select * from books where books.id=$id ";
-	$result = $con->query($sql);
-
-	if ($result->num_rows > 0) {
-		while($row = $result->fetch_assoc()) {
-			return $row;	}}
-
-	//③実行した結果から1レコード取得し、returnで値を返す。
+	$sql = 'SELECT * FROM books WHERE id = :id';
+	$sth = $con->prepare($sql);
+	//⑫実行した結果から1レコード取得し、returnで値を返す。
+	$sth->bindParam('id', $id, PDO::PARAM_INT);
+	$sth->execute();
+	return $sth->fetch(PDO::FETCH_ASSOC);
 }
 
 function updateByid($id,$con,$total){
@@ -70,7 +68,7 @@ foreach($_POST['books'] as $val /* ⑪の処理を書く */){
 	}
 
 	//⑯「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数に⑪の処理で取得した値と⑧のDBの接続情報を渡す。
-	$dtb=getByid($books,$con);
+	$dtb=getByid($val,$dbh);
 	$total=$dtb['stock']-$_POST['stock'][$count];
 	//⑰ ⑯で取得した書籍の情報の「stock」と、⑩の変数を元にPOSTの「stock」から値を取り出して書籍情報の「stock」から値を引いた値を変数に保存する。
 
