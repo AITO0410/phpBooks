@@ -36,6 +36,7 @@ $sql = "SELECT * FROM books";
 $result = $conn->query($sql);
 ?>
 
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
