@@ -35,17 +35,6 @@ if ($_SESSION["login"] == false /* ⑤の処理を書く */){
 }
 
 //⑧データベースへ接続し、接続情報を変数に保存する
-try{
-    $pdo = new PDO(DB_HOST, DB_USER, DB_PASSWORD, [ 
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, 
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_EMULATE_PREPARES => false,
-    ]);
-}catch(PDOException $e){
-    echo $e -> getMessage() . "\n";
-    exit();
-}
-
 //⑨データベースで使用する文字コードを「UTF8」にする
 $dsn = 'mysql:dbname=phpBooks;charset=utf8;host=localhost';
 $user = 'phpBooks';
@@ -62,10 +51,13 @@ foreach($_POST['books'] as $val /* ⑪の処理を書く */){
 	 * 半角数字以外の文字が設定されていないかを「is_numeric」関数を使用して確認する。
 	 * 半角数字以外の文字が入っていた場合はif文の中に入る。
 	 */
-	if (/* ⑫の処理を書く */) {
+	if (!is_numeric($_POST['stock'][$count])   /* ⑫の処理を書く */) {
 		//⑬SESSIONの「error」に「数値以外が入力されています」と設定する。
 		//⑭「include」を使用して「syukka.php」を呼び出す。
 		//⑮「exit」関数で処理を終了する。
+		$_SESSION['error']="数値以外が入力されています";
+		include 'nyuka.php';
+		exit();
 	}
 
 	//⑯「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数に⑪の処理で取得した値と⑧のDBの接続情報を渡す。
@@ -73,10 +65,13 @@ foreach($_POST['books'] as $val /* ⑪の処理を書く */){
 	//⑰ ⑯で取得した書籍の情報の「stock」と、⑩の変数を元にPOSTの「stock」から値を取り出して書籍情報の「stock」から値を引いた値を変数に保存する。
 
 	//⑱ ⑰の値が0未満か判定する。0未満の場合はif文の中に入る。
-	if(/* ⑱の処理を行う */){
+	if($total>100  /* ⑱の処理を行う */){
 		//⑲SESSIONの「error」に「出荷する個数が在庫数を超えています」と設定する。
 		//⑳「include」を使用して「syukka.php」を呼び出す。
 		//㉑「exit」関数で処理を終了する。
+		$_SESSION['error']="最大在庫数を超える数は入力できません";
+		include 'nyuka.php';
+		exit();
 	}
 	
 	//㉒ ⑩で宣言した変数をインクリメントで値を1増やす。
