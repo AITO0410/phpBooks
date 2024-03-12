@@ -125,6 +125,7 @@ function getId($id,$con){
 					</tr>
 				</thead>
 				<?php 
+				
 				/*
 				 * ⑮POSTの「books」から一つずつ値を取り出し、変数に保存する。
 				 */
