@@ -9,6 +9,7 @@
 */
 
 //①セッションを開始する
+session_start();
 
 function getByid($id,$con){
 	/* 
@@ -16,6 +17,12 @@ function getByid($id,$con){
 	 * その際にWHERE句でメソッドの引数の$idに一致する書籍のみ取得する。
 	 * SQLの実行結果を変数に保存する。
 	 */
+	$sql = "select * from books where books.id=$id ";
+	$result = $con->query($sql);
+
+	if ($result->num_rows > 0) {
+		while($row = $result->fetch_assoc()) {
+			return $row;	}}
 
 	//③実行した結果から1レコード取得し、returnで値を返す。
 }
@@ -27,6 +34,8 @@ function updateByid($id,$con,$total){
 	 * その際にWHERE句でメソッドの引数に$idに一致する書籍のみ取得する。
 	 */
 }
+$sql = "UPDATE books SET stock=$total WHERE id=$id";
+		return $result = $con->query($sql);
 
 //⑤SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
 if ($_SESSION["login"] == false /* ⑤の処理を書く */){
@@ -61,11 +70,12 @@ foreach($_POST['books'] as $val /* ⑪の処理を書く */){
 	}
 
 	//⑯「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数に⑪の処理で取得した値と⑧のDBの接続情報を渡す。
-
+	$dtb=getByid($books,$con);
+	$total=$dtb['stock']-$_POST['stock'][$count];
 	//⑰ ⑯で取得した書籍の情報の「stock」と、⑩の変数を元にPOSTの「stock」から値を取り出して書籍情報の「stock」から値を引いた値を変数に保存する。
 
 	//⑱ ⑰の値が0未満か判定する。0未満の場合はif文の中に入る。
-	if($total>100  /* ⑱の処理を行う */){
+	if($total>0  /* ⑱の処理を行う */){
 		//⑲SESSIONの「error」に「出荷する個数が在庫数を超えています」と設定する。
 		//⑳「include」を使用して「syukka.php」を呼び出す。
 		//㉑「exit」関数で処理を終了する。
@@ -84,7 +94,8 @@ foreach($_POST['books'] as $val /* ⑪の処理を書く */){
  */
 if(@$_POST['add']=="ok"   /* ㉓の処理を書く */){
 	//㉔書籍数をカウントするための変数を宣言し、値を0で初期化する。
-
+	$count=0;
+	$result;
 	//㉕POSTの「books」から値を取得し、変数に設定する。
 	foreach($_POST['books']as $books  /* ㉕の処理を書く */){
 		//㉖「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数に㉕の処理で取得した値と⑧のDBの接続情報を渡す。
@@ -92,10 +103,15 @@ if(@$_POST['add']=="ok"   /* ㉓の処理を書く */){
 		//㉘「updateByid」関数を呼び出す。その際に引数に㉕の処理で取得した値と⑧のDBの接続情報と㉗で計算した値を渡す。
 		//㉙ ㉔で宣言した変数をインクリメントで値を1増やす。
 		$count++;
-	}
+	}}
 
 	//㉚SESSIONの「success」に「入荷が完了しました」と設定する。
 	//㉛「header」関数を使用して在庫一覧画面へ遷移する。
+	echo $result;
+	if($result){
+
+		$_SESSION['success'] ="入荷が完了しました";
+		header("Location: zaiko_ichiran.php");
 }
 ?>
 <!DOCTYPE html>
