@@ -18,11 +18,9 @@ function getByid($id,$con){
 	 * その際にWHERE句でメソッドの引数の$idに一致する書籍のみ取得する。
 	 * SQLの実行結果を変数に保存する。
 	 */
-	$pdo = new PDO('mysql:host=localhost;dbname=mydb;charset=utf8','dbuser','');
- 		$qry = $pdo->prepare('select name from usertable');
- 		$qry->execute();
+	
 	//③実行した結果から1レコード取得し、returnで値を返す。
-	return $qry;
+	
 }
 
 function updateByid($id,$con,$total){
@@ -31,19 +29,19 @@ function updateByid($id,$con,$total){
 	 * 引数で受け取った$totalの値で在庫数を上書く。
 	 * その際にWHERE句でメソッドの引数に$idに一致する書籍のみ取得する。
 	 */
-	$pdo = new PDO('mysql:host=localhost;dbname=mydb;charset=utf8','dbuser','');
-	$stmt = $dbh->prepare('UPDATE users SET name = :name, message = :message WHERE id = :id');
-    $stmt->execute(array(':name' => $_POST['name'], ':message' => $_POST['message'], ':id' => $_POST['id']));
-    fputs($total);
-	WHERE($total = $id);
-	fclose($total);
-	
+
+	$sql = "UPDATE books SET stock = :total WHERE id = :id";
+	$stmt = $con->prepare($sql);
+	$stmt->bindParam(':id', $id);
+	$stmt->bindParam(':total', $total);
+	$stmt->execute();
 }
 
 //⑤SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
-if (/* ⑤の処理を書く */login){
+if (/* ⑤の処理を書く */){
 	//⑥SESSIONの「error2」に「ログインしてください」と設定する。
 	//⑦ログイン画面へ遷移する。
+
 }
 
 //⑧データベースへ接続し、接続情報を変数に保存する
