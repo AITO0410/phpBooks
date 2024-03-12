@@ -11,31 +11,21 @@
 */
 
 //①セッションを開始する
-session_start();
 //②SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る
-//③SESSIONの「error2」に「ログインしてください」と設定する。
-//④ログイン画面へ遷移する。
-if($_SESSION['login'] == false) {
-    $_SESSION['error2'] = "ログインしてください";
-    header("Location: login.php");
-    exit;
+// session_start();
+if ($_SESSION["login"] === false){
+	//③SESSIONの「error2」に「ログインしてください」と設定する。
+	print "ログインしてください";
+	header('Location: login.php');
+	//④ログイン画面へ遷移する。
 }
 
 //⑤データベースへ接続し、接続情報を変数に保存する
-$conn = new mysqli($host, $username, $password, $database);
-$host = "localhost"; // データベースのホスト名
-$username = "Username"; // データベースのユーザー名
-$password = "Password"; // データベースのパスワード
-$database = "phpbooks"; // 使用するデータベース名
 
 //⑥データベースで使用する文字コードを「UTF8」にする
-$conn->set_charset("utf8");
 
 //⑦書籍テーブルから書籍情報を取得するSQLを実行する。また実行結果を変数に保存する
-$sql = "SELECT * FROM books";
-$result = $conn->query($sql);
 ?>
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -52,11 +42,12 @@ $result = $conn->query($sql);
 			<!-- エラーメッセージ表示 -->
 			<div id="error">
 				<?php
-				// SESSIONの「success」にメッセージが設定されているかを判定する
-				if(isset($_SESSION["success"])){
-					// SESSIONの「success」の中身を表示する
-					echo $_SESSION["success"];
-					unset($_SESSION["success"]); // 表示したメッセージを削除する
+				/*
+				 * ⑧SESSIONの「success」にメッセージが設定されているかを判定する。
+				 * 設定されていた場合はif文の中に入る。
+				 */ 
+				if(/* ⑧の処理を書く */){
+					//⑨SESSIONの「success」の中身を表示する。
 				}
 				?>
 			</div>
@@ -90,16 +81,13 @@ $result = $conn->query($sql);
 						</tr>
 					</thead>
 					<tbody>
-
-					<?php
+						<?php
 						//⑩SQLの実行結果の変数から1レコードのデータを取り出す。レコードがない場合はループを終了する。
-						while($row = $result->fetch_assoc()/* ⑩の処理を書く */){
-							// extract変数を使用し、1レコードのデータを渡す。
-							extract($row);
+						while(/* ⑩の処理を書く */){
+							//⑪extract変数を使用し、1レコードのデータを渡す。
 
 							echo "<tr id='book'>";
-							// echo "<td id='check'><input type='checkbox' name='books[]'value="./* ⑫IDを設定する */."></td>";
-							echo "<td id='check'><input type='checkbox' name='books[]' value='$id'></td>";
+							echo "<td id='check'><input type='checkbox' name='books[]'value="./* ⑫IDを設定する */."></td>";
 							echo "<td id='id'>/* ⑬IDを表示する */</td>";
 							echo "<td id='title'>/* ⑭titleを表示する */</td>";
 							echo "<td id='author'>/* ⑮authorを表示する */</td>";
