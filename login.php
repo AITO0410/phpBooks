@@ -21,7 +21,7 @@ if(isset($_POST['decision']) && $_POST['decision'] == 1)
                 // Set login flag to true
                 $_SESSION['login'] = true;
                 // Redirect to inventory.php
-                header("Location: inventory.php");
+                header("Location: zaiko_ichiran.php");
                 exit; // Ensure script termination after redirect
             } else {
                 $error_message = "ユーザー名かパスワードが間違っています";

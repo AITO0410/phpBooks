@@ -22,11 +22,12 @@ if($_SESSION['login'] == false) {
 }
 
 //⑤データベースへ接続し、接続情報を変数に保存する
-$conn = new mysqli($host, $username, $password, $database);
+
 $host = "localhost"; // データベースのホスト名
-$username = "Username"; // データベースのユーザー名
-$password = "Password"; // データベースのパスワード
-$database = "phpbooks"; // 使用するデータベース名
+$username = "phpBooks"; // データベースのユーザー名
+$password = "zaiko"; // データベースのパスワード
+$database = "phpBooks"; // 使用するデータベース名
+$conn = new mysqli($host, $username, $password, $database);
 
 //⑥データベースで使用する文字コードを「UTF8」にする
 $conn->set_charset("utf8");
