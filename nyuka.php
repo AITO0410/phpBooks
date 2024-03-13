@@ -10,24 +10,28 @@
 数値以外が入力されています：入力された値に数字以外の文字が含まれている
 */
 
-// セッションのステータスを確認し、セッションが開始されていない場合は開始する
+/*
+ * ①session_status()の結果が「PHP_SESSION_NONE」と一致するか判定する。
+ * 一致した場合はif文の中に入る。
+ */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ログイン状態を確認し、未ログインの場合はログイン画面にリダイレクトする
-if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
+//③SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
+if (!isset($_SESSION['login']) || $_SESSION['login'] !== false) {
     $_SESSION['error2'] = "ログインしてください";
     header("Location: login.php");
     exit;
 }
 
-// データベースへの接続情報
+//⑥データベースへ接続し、接続情報を変数に保存する
 $host = 'localhost';
 $dbname = 'phpBooks';
 $username = 'phpBooks';
 $password = 'zaiko';
 
+//⑦データベースで使用する文字コードを「UTF8」にする
 try {
     // データベースに接続する
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
@@ -43,33 +47,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     foreach ($_POST['books'] as $book_id => $quantity) {
         // 入荷個数が未入力かどうかをチェックする
         if (empty($quantity)) {
-            $_SESSION['error2'] = "入荷個数が未入力です";
-            header("Location: inventory.php");
+            $_SESSION['error2'] = "入荷する商品が選択されていません";
+            header("Location: zaiko_ichiran.php");
             exit;
         }
-        // 数値以外が入力されているかチェックする
-        if (!is_numeric($quantity)) {
-            $_SESSION['error2'] = "数値以外が入力されています";
-            header("Location: inventory.php");
-            exit;
-        }
-        // 現在の在庫数と入荷の個数を足した値が最大在庫数を超えているかチェックする
-        $sql = "SELECT stock FROM books WHERE id = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $book_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $current_stock = $stmt->fetchColumn();
-        if (($current_stock + $quantity) > 100) {
-            $_SESSION['error2'] = "最大在庫数を超える数は入力できません";
-            header("Location: inventory.php");
-            exit;
-        }
+        function getId($id, $con){
+            // その際にWHERE句でメソッドの引数の$idに一致する書籍のみ取得する。
+            $sql = "SELECT * FROM books WHERE id = :id";
+        
+            //⑪書籍を取得するSQLを作成する実行する。
+            $stmt = $con->prepare($sql);
+        
+            //SQLの実行結果を変数に保存する。
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        
+            
+            $stmt->execute();
+        
+            // ⑫実行した結果から1レコード取得し、returnで値を返す。
+            $book = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+         
+            $stmt->closeCursor();
+        
+            return $book;
+        }}
+        
     }
-    // 入荷処理が正常に完了した場合、確認画面にリダイレクトする
-    $_SESSION['confirm_books'] = $_POST['books'];
-    header("Location: confirm_inventory.php");
-    exit;
-}
 ?>
 <!DOCTYPE html>
 <html lang="ja">
