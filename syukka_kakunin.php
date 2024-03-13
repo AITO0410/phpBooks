@@ -31,19 +31,19 @@ function updateByid($id,$con,$total){
 	 * 引数で受け取った$totalの値で在庫数を上書く。
 	 * その際にWHERE句でメソッドの引数に$idに一致する書籍のみ取得する。
 	 */
-
-	// $sql = "UPDATE books SET stock=$total WHERE id=$id";
-	// return $result = $con->query($sql);
 	$sql = 'UPDATE books SET stock = :total WHERE id = :id';
 	$sth = $con->prepare($sql);
 	$sth->bindParam('total', $total, PDO::PARAM_INT);
 	$sth->bindParam('id', $id, PDO::PARAM_INT);
 	$sth->execute();
 }
+
 //⑤SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
-if (isset($_SESSION['login']) && $_SESSION["login"] == false /* ⑤の処理を書く */){
+if (!isset($_SESSION['login']) || $_SESSION["login"] === false/* ③の処理を書く */){
 	$_SESSION["error2"] = "ログインしてください"; //⑥SESSIONの「error2」に「ログインしてください」と設定する。
-	header("Location: login.php"); //⑦ログイン画面へ遷移する。
+	header('Location: ./login.php'); //⑦ログイン画面へ遷移する。
+}else{
+	echo 'ABC';
 }
 
 //⑧データベースへ接続し、接続情報を変数に保存する
