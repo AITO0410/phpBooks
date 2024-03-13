@@ -1,3 +1,4 @@
+自分の仕事
 <?php
 /* 
 【機能】
@@ -9,6 +10,7 @@
 */
 
 //①セッションを開始する
+session_start(); 
 
 function getByid($id,$con){
 	/* 
@@ -16,8 +18,13 @@ function getByid($id,$con){
 	 * その際にWHERE句でメソッドの引数の$idに一致する書籍のみ取得する。
 	 * SQLの実行結果を変数に保存する。
 	 */
-
+	$sql = "SELECT * FROM books WHERE id = :id";
+    $stmt = $con->prepare($sql);
+    $stmt->bindParam(':id', $id);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 	//③実行した結果から1レコード取得し、returnで値を返す。
+	return $result;
 }
 
 function updateByid($id,$con,$total){
@@ -26,66 +33,98 @@ function updateByid($id,$con,$total){
 	 * 引数で受け取った$totalの値で在庫数を上書く。
 	 * その際にWHERE句でメソッドの引数に$idに一致する書籍のみ取得する。
 	 */
+
+	$sql = "UPDATE books SET stock = :total WHERE id = :id";
+	$stmt = $con->prepare($sql);
+	$stmt->bindParam(':id', $id);
+	$stmt->bindParam(':total', $total);
+	$stmt->execute();
 }
 
 //⑤SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
-if (/* ⑤の処理を書く */){
+if (/* ⑤の処理を書く */!isset($_SESSION['login']) || $_SESSION['login'] === false){
 	//⑥SESSIONの「error2」に「ログインしてください」と設定する。
 	//⑦ログイン画面へ遷移する。
-}
+	$_SESSION['error2'] = "ログインしてください";
+	header("Location: login.php");
 
 
 //⑧データベースへ接続し、接続情報を変数に保存する
-
+$con = new PDO("mysql:host=localhost;dbname=database_name", "username", "password");
 //⑨データベースで使用する文字コードを「UTF8」にする
-
+$con->exec("SET NAMES utf8");
 //⑩書籍数をカウントするための変数を宣言し、値を0で初期化する
-
+$bookCount = 0;
 //⑪POSTの「books」から値を取得し、変数に設定する。
-foreach(/* ⑪の処理を書く */){
-	/*
-	 * ⑫POSTの「stock」について⑩の変数の値を使用して値を取り出す。
-	 * 半角数字以外の文字が設定されていないかを「is_numeric」関数を使用して確認する。
-	 * 半角数字以外の文字が入っていた場合はif文の中に入る。
-	 */
-	if (/* ⑫の処理を書く */) {
-		//⑬SESSIONの「error」に「数値以外が入力されています」と設定する。
-		//⑭「include」を使用して「nyuka.php」を呼び出す。
-		//⑮「exit」関数で処理を終了する。
-	}
+$books = $_POST['books'];
+}
 
-	//⑯「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数に⑪の処理で取得した値と⑧のDBの接続情報を渡す。
+foreach(/* ⑪の処理を書く */$books as $book){
+    /*
+     * ⑫POSTの「stock」について⑩の変数の値を使用して値を取り出す。
+     * 半角数字以外の文字が設定されていないかを「is_numeric」関数を使用して確認する。
+     * 半角数字以外の文字が入っていた場合はif文の中に入る。
+     */
+    if (!is_numeric($_POST['stock'][$book])) {
+        // ⑬SESSIONの「error」に「数値以外が入力されています」と設定する。
+        $_SESSION['error'] = "数値以外が入力されています";
+        // ⑭「include」を使用して「nyuka.php」を呼び出す。
+        include "nyuka.php";
+        // ⑮「exit」関数で処理を終了する。
+        exit;
+    }
 
-	//⑰ ⑯で取得した書籍の情報の「stock」と、⑩の変数を元にPOSTの「stock」から値を取り出し、足した値を変数に保存する。
+    // ⑯「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数に⑪の処理で取得した値と⑧のDBの接続情報を渡す。
+    $bookInfo = getByid($book, $con);
 
-	//⑱ ⑰の値が100を超えているか判定する。超えていた場合はif文の中に入る。
-	if(/* ⑱の処理を行う */){
-		//⑲SESSIONの「error」に「最大在庫数を超える数は入力できません」と設定する。
-		//⑳「include」を使用して「nyuka.php」を呼び出す。
-		//㉑「exit」関数で処理を終了する。
-	}
-	
-	//㉒ ⑩で宣言した変数をインクリメントで値を1増やす。
+    // ⑰ ⑯で取得した書籍の情報の「stock」と、⑩の変数を元にPOSTの「stock」から値を取り出し、足した値を変数に保存する。
+    $newStock = $bookInfo['stock'] + $_POST['stock'][$book];
+
+    // ⑱ ⑰の値が100を超えているか判定する。超えていた場合はif文の中に入る。
+    if($newStock > 100){
+        // ⑲SESSIONの「error」に「最大在庫数を超える数は入力できません」と設定する。
+        $_SESSION['error'] = "最大在庫数を超える数は入力できません";
+        // ⑳「include」を使用して「nyuka.php」を呼び出す。
+        include "nyuka.php";
+        // ㉑「exit」関数で処理を終了する。
+        exit;
+    }
+
+    // ㉒ ⑩で宣言した変数をインクリメントで値を1増やす。
+    $bookCount++;
 }
 
 /*
  * ㉓POSTでこの画面のボタンの「add」に値が入ってるか確認する。
  * 値が入っている場合は中身に「ok」が設定されていることを確認する。
  */
-if(/* ㉓の処理を書く */){
+if(isset($_POST['add']) && $_POST['add'] === "ok") {
 	//㉔書籍数をカウントするための変数を宣言し、値を0で初期化する。
+	$bookCount = 0;
 
 	//㉕POSTの「books」から値を取得し、変数に設定する。
-	foreach(/* ㉕の処理を書く */){
+	foreach($_POST['books'] as $book){
 		//㉖「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数に㉕の処理で取得した値と⑧のDBの接続情報を渡す。
+		$bookInfo = getByid($book, $con);
+		
 		//㉗ ㉖で取得した書籍の情報の「stock」と、㉔の変数を元にPOSTの「stock」から値を取り出し、足した値を変数に保存する。
+		$newStock = $bookInfo['stock'] + $_POST['stock'][$book];
+		
 		//㉘「updateByid」関数を呼び出す。その際に引数に㉕の処理で取得した値と⑧のDBの接続情報と㉗で計算した値を渡す。
+		updateByid($book, $con, $newStock);
+		
 		//㉙ ㉔で宣言した変数をインクリメントで値を1増やす。
+		$bookCount++;
 	}
 
 	//㉚SESSIONの「success」に「入荷が完了しました」と設定する。
+	$_SESSION['success'] = "入荷が完了しました";
 	//㉛「header」関数を使用して在庫一覧画面へ遷移する。
+	header("Location: stock_list.php");
+	exit; // リダイレクト後は処理を終了する
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -112,20 +151,22 @@ if(/* ㉓の処理を書く */){
 					<tbody>
 						<?php
 						//㉜書籍数をカウントするための変数を宣言し、値を0で初期化する。
-
+						$bookCount = 0;
 						//㉝POSTの「books」から値を取得し、変数に設定する。
-						foreach(/* ㉝の処理を書く */){
+						foreach(/* ㉝の処理を書く */$_POST['books'] as $book){
 							//㉞「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数に㉜の処理で取得した値と⑧のDBの接続情報を渡す。
+							$bookInfo = getByid($book, $con);
 						?>
 						<tr>
-							<td><?php echo	/* ㉟ ㉞で取得した書籍情報からtitleを表示する。 */;?></td>
-							<td><?php echo	/* ㊱ ㉞で取得した書籍情報からstockを表示する。 */;?></td>
-							<td><?php echo	/* ㊱ POSTの「stock」に設定されている値を㉜の変数を使用して呼び出す。 */;?></td>
+							<td><?php echo	$bookInfo['title'];/* ㉟ ㉞で取得した書籍情報からtitleを表示する。 */;?></td>
+							<td><?php echo	$bookInfo['stock'];/* ㊱ ㉞で取得した書籍情報からstockを表示する。 */;?></td>
+							<td><?php echo	$_POST['stock'][$book];/* ㊱ POSTの「stock」に設定されている値を㉜の変数を使用して呼び出す。 */;?></td>
 						</tr>
-						<input type="hidden" name="books[]" value="<?php echo /* ㊲ ㉝で取得した値を設定する */; ?>">
-						<input type="hidden" name="stock[]" value='<?php echo /* ㊳POSTの「stock」に設定されている値を㉜の変数を使用して設定する。 */;?>'>
+						<input type="hidden" name="books[]" value="<?php echo $book; /* ㊲ ㉝で取得した値を設定する */; ?>">
+						<input type="hidden" name="stock[]" value='<?php echo $_POST['stock'][$book]; /* ㊳POSTの「stock」に設定されている値を㉜の変数を使用して設定する。 */;?>'>
 						<?php
 							//㊴ ㉜で宣言した変数をインクリメントで値を1増やす。
+							$bookCount++;
 						}
 						?>
 					</tbody>
