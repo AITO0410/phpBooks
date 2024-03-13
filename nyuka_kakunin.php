@@ -47,17 +47,20 @@ if (/* ⑤の処理を書く */!isset($_SESSION['login']) || $_SESSION['login'] 
 	//⑦ログイン画面へ遷移する。
 	$_SESSION['error2'] = "ログインしてください";
 	header("Location: login.php");
-
+}
 
 //⑧データベースへ接続し、接続情報を変数に保存する
-$con = new PDO("mysql:host=localhost;dbname=database_name", "username", "password");
 //⑨データベースで使用する文字コードを「UTF8」にする
-$con->exec("SET NAMES utf8");
+$dsn = 'mysql:dbname=phpBooks;charset=utf8;host=localhost';
+$user = 'phpBooks';
+$pass = 'zaiko';
+$con = new PDO($dsn, $user, $pass);
+
 //⑩書籍数をカウントするための変数を宣言し、値を0で初期化する
 $bookCount = 0;
 //⑪POSTの「books」から値を取得し、変数に設定する。
 $books = $_POST['books'];
-}
+
 
 foreach(/* ⑪の処理を書く */$books as $book){
     /*
@@ -65,7 +68,7 @@ foreach(/* ⑪の処理を書く */$books as $book){
      * 半角数字以外の文字が設定されていないかを「is_numeric」関数を使用して確認する。
      * 半角数字以外の文字が入っていた場合はif文の中に入る。
      */
-    if (!is_numeric($_POST['stock'][$book])) {
+    if (!is_numeric($_POST['stock'][$count])) {
         // ⑬SESSIONの「error」に「数値以外が入力されています」と設定する。
         $_SESSION['error'] = "数値以外が入力されています";
         // ⑭「include」を使用して「nyuka.php」を呼び出す。
