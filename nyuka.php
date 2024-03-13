@@ -40,18 +40,7 @@ try {
 } catch (PDOException $e) {
     die("Error: " . $e->getMessage());
 }
-
-// 入荷処理
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // 入荷個数のバリデーションと最大在庫数のチェック
-    foreach ($_POST['books'] as $book_id => $quantity) {
-        // 入荷個数が未入力かどうかをチェックする
-        if (empty($quantity)) {
-            $_SESSION['error2'] = "入荷する商品が選択されていません";
-            header("Location: zaiko_ichiran.php");
-            exit;
-        }
-        function getId($id, $con){
+function getId($id, $con){
             // その際にWHERE句でメソッドの引数の$idに一致する書籍のみ取得する。
             $sql = "SELECT * FROM books WHERE id = :id";
         
@@ -68,10 +57,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $book = $stmt->fetch(PDO::FETCH_ASSOC);
         
          
-            $stmt->closeCursor();
+           // $stmt->closeCursor();
         
             return $book;
-        }}
+        }
+// 入荷処理
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // 入荷個数のバリデーションと最大在庫数のチェック
+    foreach ($_POST['books'] as $book_id => $quantity) {
+        // 入荷個数が未入力かどうかをチェックする
+        if (empty($quantity)) {
+            $_SESSION['error2'] = "入荷する商品が選択されていません";
+            header("Location: zaiko_ichiran.php");
+            exit;
+        }
+        }
         
     }
 ?>
