@@ -12,7 +12,6 @@
 /*
  * ①session_status()の結果が「PHP_SESSION_NONE」と一致するか判定する。
  * 一致した場合はif文の中に入る。
- */
 /* ①の処理を行う */
 if (session_status() == PHP_SESSION_NONE) {
 	//②セッションを開始する
@@ -21,21 +20,21 @@ if (session_status() == PHP_SESSION_NONE) {
 
 
 // Test
-$_SESSION['login'] = true;
+// $_SESSION['login'] = true;
 
 //③SESSIONの「login」フラグがfalseか判定する。「login」フラグがfalseの場合はif文の中に入る。
 // if ($_SESSION["login"] === false/* ③の処理を書く */){
-if (isset($_SESSION['login']) && $_SESSION["login"] === false/* ③の処理を書く */){
+if (!isset($_SESSION['login']) || $_SESSION["login"] === false/* ③の処理を書く */){
 	//④SESSIONの「error2」に「ログインしてください」と設定する。
 	$_SESSION["error2"] = 'ログインしてください';
 
 	// Test
-	echo 'login F';
-	echo $_SESSION["error2"];
+	// echo 'login F';
+	// echo $_SESSION["error2"];
 	//⑤ログイン画面へ遷移する。
 	header('Location: ./login.php');
 }
-echo 'login T';
+// echo 'login T';
 
 //⑥データベースへ接続し、接続情報を変数に保存する
 //⑦データベースで使用する文字コードを「UTF8」にする
@@ -45,13 +44,13 @@ $pass = 'zaiko';
 $dbh = new PDO($dsn, $user, $pass);
 
 //⑧POSTの「books」の値が空か判定する。空の場合はif文の中に入る。
-// if(!isset($_POST['books'])/* ⑧の処理を行う */){
-if(false/* ⑧の処理を行う */){
+if(!isset($_POST['books'])/* ⑧の処理を行う */){
+// if(false/* ⑧の処理を行う */){
 	//⑨SESSIONの「success」に「出荷する商品が選択されていません」と設定する。
 	$_SESSION["success"] = '出荷する商品が選択されていません';
 
 	// Test
-	echo $_SESSION["success"];
+	// echo $_SESSION["success"];
 	//⑩在庫一覧画面へ遷移する。
 	header('Location: ./zaiko_ichiran.php');
 }
@@ -125,11 +124,11 @@ function getId($id,$con){
 				/*
 				 * ⑮POSTの「books」から一つずつ値を取り出し、変数に保存する。
 				 */
-				// foreach($_POST['books'] as $val){
+				foreach($_POST['books'] as $val){
 
 				// Test
-				$book_id = [1, 10, 20, 25];
-				foreach($book_id as $val){
+				// $book_id = [1, 10, 20, 25];
+				// foreach($book_id as $val){
 					// ⑯「getId」関数を呼び出し、変数に戻り値を入れる。その際引数に⑮の処理で取得した値と⑥のDBの接続情報を渡す。
 					$result = getId($val, $dbh);
 				?>

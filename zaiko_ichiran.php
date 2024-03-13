@@ -22,11 +22,12 @@ if($_SESSION['login'] == false) {
 }
 
 //⑤データベースへ接続し、接続情報を変数に保存する
-$conn = new mysqli($host, $username, $password, $database);
+
 $host = "localhost"; // データベースのホスト名
-$username = "Username"; // データベースのユーザー名
-$password = "Password"; // データベースのパスワード
-$database = "phpbooks"; // 使用するデータベース名
+$username = "phpBooks"; // データベースのユーザー名
+$password = "zaiko"; // データベースのパスワード
+$database = "phpBooks"; // 使用するデータベース名
+$conn = new mysqli($host, $username, $password, $database);
 
 //⑥データベースで使用する文字コードを「UTF8」にする
 $conn->set_charset("utf8");
@@ -35,6 +36,7 @@ $conn->set_charset("utf8");
 $sql = "SELECT * FROM books";
 $result = $conn->query($sql);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -93,21 +95,19 @@ $result = $conn->query($sql);
 
 					<?php
 						//⑩SQLの実行結果の変数から1レコードのデータを取り出す。レコードがない場合はループを終了する。
-						while($row = $result->fetch_assoc()/* ⑩の処理を書く */){
+						while($row = $result->fetch_assoc()){
 							// extract変数を使用し、1レコードのデータを渡す。
 							extract($row);
 
-							echo "<tr id='book'>";
-							// echo "<td id='check'><input type='checkbox' name='books[]'value="./* ⑫IDを設定する */."></td>";
-							echo "<td id='check'><input type='checkbox' name='books[]' value='$id'></td>";
-							echo "<td id='id'>/* ⑬IDを表示する */</td>";
-							echo "<td id='title'>/* ⑭titleを表示する */</td>";
-							echo "<td id='author'>/* ⑮authorを表示する */</td>";
-							echo "<td id='date'>/* ⑯salesDateを表示する */</td>";
-							echo "<td id='price'>/* ⑰priceを表示する */</td>";
-							echo "<td id='stock'>/* ⑱stockを表示する */</td>";
-
-							echo "</tr>";
+                            echo "<tr id='book'>";
+                            echo "<td id='check'><input type='checkbox' name='books[]' value='$id'></td>";
+                            echo "<td id='id'>$id</td>";
+                            echo "<td id='title'>$title</td>";
+                            echo "<td id='author'>$author</td>";
+                            echo "<td id='date'>$salesDate</td>";
+                            echo "<td id='price'>$price</td>";
+                            echo "<td id='stock'>$stock</td>";
+                            echo "</tr>";
 						}
 						?>
 					</tbody>
