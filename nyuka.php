@@ -24,7 +24,6 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] === false) {
     header("Location: ./login.php");
     exit;
 }
-
 //⑥データベースへ接続し、接続情報を変数に保存する
 $host = 'localhost';
 $dbname = 'phpBooks';
