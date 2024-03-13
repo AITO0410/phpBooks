@@ -24,9 +24,9 @@ if (!isset($_SESSION['login']) || $_SESSION['login'] !== true) {
 
 // データベースへの接続情報
 $host = 'localhost';
-$dbname = 'your_database_name';
-$username = 'your_username';
-$password = 'your_password';
+$dbname = 'phpBooks';
+$username = 'phpBooks';
+$password = 'zaiko';
 
 try {
     // データベースに接続する
