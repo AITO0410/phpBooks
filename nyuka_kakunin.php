@@ -81,7 +81,7 @@ foreach(/* ⑪の処理を書く */$books as $book){
     $bookInfo = getByid($book, $con);
 
     // ⑰ ⑯で取得した書籍の情報の「stock」と、⑩の変数を元にPOSTの「stock」から値を取り出し、足した値を変数に保存する。
-    $newStock = $bookInfo['stock'] + $_POST['stock'][$book];
+    $newStock = $bookInfo['stock'] + $_POST['stock'][$bookCount];
 
     // ⑱ ⑰の値が100を超えているか判定する。超えていた場合はif文の中に入る。
     if($newStock > 100){
@@ -163,7 +163,7 @@ if(isset($_POST['add']) && $_POST['add'] === "ok") {
 						<tr>
 							<td><?php echo	$bookInfo['title'];/* ㉟ ㉞で取得した書籍情報からtitleを表示する。 */;?></td>
 							<td><?php echo	$bookInfo['stock'];/* ㊱ ㉞で取得した書籍情報からstockを表示する。 */;?></td>
-							<td><?php echo	$_POST['stock'][$book];/* ㊱ POSTの「stock」に設定されている値を㉜の変数を使用して呼び出す。 */;?></td>
+							<td><?php echo	$_POST['stock'][$bookCount];/* ㊱ POSTの「stock」に設定されている値を㉜の変数を使用して呼び出す。 */;?></td>
 						</tr>
 						<input type="hidden" name="books[]" value="<?php echo $book; /* ㊲ ㉝で取得した値を設定する */; ?>">
 						<input type="hidden" name="stock[]" value='<?php echo $_POST['stock'][$book]; /* ㊳POSTの「stock」に設定されている値を㉜の変数を使用して設定する。 */;?>'>
