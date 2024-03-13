@@ -101,30 +101,20 @@ if(@$_POST['add'] == "ok"   /* ㉓の処理を書く */){
 	$count=0;
 	//㉕POSTの「books」から値を取得し、変数に設定する。
 	foreach($_POST['books'] as $val  /* ㉕の処理を書く */){
-		echo $val;
-		echo ':';
-
 		//㉖「getByid」関数を呼び出し、変数に戻り値を入れる。その際引数に㉕の処理で取得した値と⑧のDBの接続情報を渡す。
 		$result = getByid($val, $dbh);
 		//㉗ ㉖で取得した書籍の情報の「stock」と、㉔の変数を元にPOSTの「stock」から値を取り出して書籍情報の「stock」から値を引いた値を変数に保存する。
-		$total = $dtb['stock'] - $_POST['stock'][$count];
-
-		echo $dtb['stock'];
-		echo ':';
-		echo $_POST['stock'][$count];
-		echo '::';
-		echo $total;
-		echo ';';
+		$total = $result['stock'] - $_POST['stock'][$count];
 		//㉘「updateByid」関数を呼び出す。その際に引数に㉕の処理で取得した値と⑧のDBの接続情報と㉗で計算した値を渡す。
-		// updateByid($val, $dbh, $total);
+		updateByid($val, $dbh, $total);
 		// //㉙ ㉔で宣言した変数をインクリメントで値を1増やす。
-		// $count++;
+		$count++;
 	}
 
 	//㉚SESSIONの「success」に「入荷が完了しました」と設定する。
 	//㉛「header」関数を使用して在庫一覧画面へ遷移する。
-	// $_SESSION['success'] = "入荷が完了しました";
-	// header("Location: zaiko_ichiran.php");
+	$_SESSION['success'] = "出荷が完了しました";
+	header("Location: zaiko_ichiran.php");
 }
 ?>
 <!DOCTYPE html>
