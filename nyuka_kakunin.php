@@ -47,6 +47,7 @@ if (/* ⑤の処理を書く */!isset($_SESSION['login']) || $_SESSION['login'] 
 	//⑦ログイン画面へ遷移する。
 	$_SESSION['error2'] = "ログインしてください";
 	header("Location: login.php");
+	exit;
 }
 
 //⑧データベースへ接続し、接続情報を変数に保存する
@@ -111,7 +112,7 @@ if(isset($_POST['add']) && $_POST['add'] === "ok") {
 		$bookInfo = getByid($book, $con);
 		
 		//㉗ ㉖で取得した書籍の情報の「stock」と、㉔の変数を元にPOSTの「stock」から値を取り出し、足した値を変数に保存する。
-		$newStock = $bookInfo['stock'] + $_POST['stock'][$book];
+		$newStock = $bookInfo['stock'] + $_POST['stock'][$bookCount];
 		
 		//㉘「updateByid」関数を呼び出す。その際に引数に㉕の処理で取得した値と⑧のDBの接続情報と㉗で計算した値を渡す。
 		updateByid($book, $con, $newStock);
@@ -123,7 +124,7 @@ if(isset($_POST['add']) && $_POST['add'] === "ok") {
 	//㉚SESSIONの「success」に「入荷が完了しました」と設定する。
 	$_SESSION['success'] = "入荷が完了しました";
 	//㉛「header」関数を使用して在庫一覧画面へ遷移する。
-	header("Location: stock_list.php");
+	header("Location: zaiko_ichiran.php");
 	exit; // リダイレクト後は処理を終了する
 }
 
@@ -166,7 +167,7 @@ if(isset($_POST['add']) && $_POST['add'] === "ok") {
 							<td><?php echo	$_POST['stock'][$bookCount];/* ㊱ POSTの「stock」に設定されている値を㉜の変数を使用して呼び出す。 */;?></td>
 						</tr>
 						<input type="hidden" name="books[]" value="<?php echo $book; /* ㊲ ㉝で取得した値を設定する */; ?>">
-						<input type="hidden" name="stock[]" value='<?php echo $_POST['stock'][$book]; /* ㊳POSTの「stock」に設定されている値を㉜の変数を使用して設定する。 */;?>'>
+						<input type="hidden" name="stock[]" value='<?php echo $_POST['stock'][$bookCount]; /* ㊳POSTの「stock」に設定されている値を㉜の変数を使用して設定する。 */;?>'>
 						<?php
 							//㊴ ㉜で宣言した変数をインクリメントで値を1増やす。
 							$bookCount++;
