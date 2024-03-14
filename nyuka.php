@@ -98,7 +98,7 @@ if(!isset($_POST['books'])/* ⑧の処理を行う */){
     <div id="header">
         <h1>入荷</h1>
     </div>
-
+    
     <!-- メニュー -->
     <div id="menu">
         <nav>
