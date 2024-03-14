@@ -61,18 +61,30 @@ function getId($id, $con){
             return $book;
         }
 // 入荷処理
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // 入荷個数のバリデーションと最大在庫数のチェック
-    foreach ($_POST['books'] as $book_id => $quantity) {
-        // 入荷個数が未入力かどうかをチェックする
-        if (empty($quantity)) {
-            $_SESSION['error2'] = "入荷する商品が選択されていません";
-            header("Location: zaiko_ichiran.php");
-            exit;
-        }
-        }
+// if ($_SERVER["REQUEST_METHOD"] === "POST") {
+//     // 入荷個数のバリデーションと最大在庫数のチェック
+//     foreach ($_POST['books'] as $book_id => $quantity) {
+//         // 入荷個数が未入力かどうかをチェックする
+//         if (empty($quantity)) {
+//             $_SESSION['error2'] = "入荷する商品が選択されていません";
+//             header("Location: zaiko_ichiran.php");
+//             exit;
+//         }
+//         }
         
-    }
+//     }
+
+//⑧POSTの「books」の値が空か判定する。空の場合はif文の中に入る。
+if(!isset($_POST['books'])/* ⑧の処理を行う */){
+    // if(false/* ⑧の処理を行う */){
+        //⑨SESSIONの「success」に「出荷する商品が選択されていません」と設定する。
+        $_SESSION["success"] = '出荷する商品が選択されていません';
+    
+        // Test
+        // echo $_SESSION["success"];
+        //⑩在庫一覧画面へ遷移する。
+        header('Location: ./zaiko_ichiran.php');
+}
 ?>
 <!DOCTYPE html>
 <html lang="ja">

@@ -103,6 +103,8 @@ function getId($id,$con){
 		if(isset($_SESSION['error'])/* ⑬の処理を書く */){
 			//⑭SESSIONの「error」の中身を表示する。
 			echo $_SESSION['error'];
+			// エラーメッセージを表示した後にセッション変数をクリアする
+			unset($_SESSION['error']);
 		}
 		?>
 		</div>
