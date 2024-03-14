@@ -79,7 +79,7 @@ if(!isset($_POST['books'])/* ⑧の処理を行う */){
     // if(false/* ⑧の処理を行う */){
         //⑨SESSIONの「success」に「出荷する商品が選択されていません」と設定する。
         $_SESSION["success"] = '入荷する商品が選択されていません';
-    
+
         // Test
         // echo $_SESSION["success"];
         //⑩在庫一覧画面へ遷移する。
