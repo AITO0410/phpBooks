@@ -19,7 +19,6 @@ if($_SESSION['login'] == false) {
     header("Location: login.php");
     exit;
 }
-
 //⑤データベースへ接続し、接続情報を変数に保存する
 
 $host = "localhost"; // データベースのホスト名
